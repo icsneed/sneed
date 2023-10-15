@@ -226,9 +226,9 @@ module {
 				);
 			};
             case (#burn) {
-                if (tx_req.to == token.minting_account and tx_req.amount < token.min_burn_amount) {
+                if (tx_req.to == token._minting_account and tx_req.amount < token._min_burn_amount) {
                     return #err(
-                        #BadBurn { min_burn_amount = token.min_burn_amount },
+                        #BadBurn { min_burn_amount = token._min_burn_amount },
                     );
                 };
 

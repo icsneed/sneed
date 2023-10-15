@@ -123,10 +123,34 @@ module {
         #TemporarilyUnavailable;
         #GenericError : { error_code : Nat; message : Text };
     };
-    
+
+    public type SetParameterError = {
+        #GenericError : { error_code : Nat; message : Text };
+    };
+
     public type TransferResult = {
         #Ok : TxIndex;
         #Err : TransferError;
+    };
+    
+    public type SetTextParameterResult = {
+        #Ok : Text;
+        #Err : SetParameterError;
+    };
+    
+    public type SetNat8ParameterResult = {
+        #Ok : Nat8;
+        #Err : SetParameterError;
+    };
+    
+    public type SetBalanceParameterResult = {
+        #Ok : Balance;
+        #Err : SetParameterError;
+    };
+    
+    public type SetAccountParameterResult = {
+        #Ok : Account;
+        #Err : SetParameterError;
     };
 
     /// Interface for the ICRC token canister
@@ -192,6 +216,7 @@ module {
         symbol : Text;
         decimals : Nat8;
         fee : Balance;
+        logo : Text;
         minting_account : Account;
         max_supply : Balance;
         initial_balances : [(Account, Balance)];
@@ -207,6 +232,7 @@ module {
         symbol : Text;
         decimals : Nat8;
         fee : Balance;
+        logo : Text;
         max_supply : Balance;
         initial_balances : [(Account, Balance)];
         min_burn_amount : Balance;
@@ -239,16 +265,19 @@ module {
     /// The state of the token canister
     public type TokenData = {
         /// The name of the token
-        name : Text;
+        var _name : Text;
 
         /// The symbol of the token
-        symbol : Text;
+        var _symbol : Text;
 
         /// The number of decimals the token uses
-        decimals : Nat8;
+        var _decimals : Nat8;
 
         /// The fee charged for each transaction
         var _fee : Balance;
+
+        /// The logo for the token
+        var _logo : Text;
 
         /// The maximum supply of the token
         max_supply : Balance;
@@ -261,7 +290,7 @@ module {
 
         /// The account that is allowed to mint new tokens
         /// On initialization, the maximum supply is minted to this account
-        minting_account : Account;
+        var _minting_account : Account;
 
         /// The balances of all accounts
         accounts : AccountBalances;
@@ -276,7 +305,7 @@ module {
         transaction_window : Nat;
 
         /// The minimum amount of tokens that must be burned in a transaction
-        min_burn_amount : Balance;
+        var _min_burn_amount : Balance;
 
         /// The allowed difference between the ledger time and the time of the device the transaction was created on
         permitted_drift : Nat;

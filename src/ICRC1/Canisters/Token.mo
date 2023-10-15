@@ -80,6 +80,38 @@ shared ({ caller = _owner }) actor class Token(
         await* ICRC1.burn(token, args, caller);
     };
 
+    public shared ({ caller }) func set_name(name : Text) : async ICRC1.SetTextParameterResult {
+        await* ICRC1.set_name(token, name, caller);
+    };
+
+    public shared ({ caller }) func set_symbol(symbol : Text) : async ICRC1.SetTextParameterResult {
+        await* ICRC1.set_symbol(token, symbol, caller);
+    };
+
+    public shared ({ caller }) func set_logo(logo : Text) : async ICRC1.SetTextParameterResult {
+        await* ICRC1.set_logo(token, logo, caller);
+    };
+
+    public shared ({ caller }) func set_fee(fee : ICRC1.Balance) : async ICRC1.SetBalanceParameterResult {
+        await* ICRC1.set_fee(token, fee, caller);
+    };
+
+    public shared ({ caller }) func set_decimals(decimals : Nat8) : async ICRC1.SetNat8ParameterResult {
+        await* ICRC1.set_decimals(token, decimals, caller);
+    };
+
+    public shared ({ caller }) func set_min_burn_amount(min_burn_amount : ICRC1.Balance) : async ICRC1.SetBalanceParameterResult {
+        await* ICRC1.set_min_burn_amount(token, min_burn_amount, caller);
+    };
+
+    public shared ({ caller }) func set_minting_account(minting_account : Text) : async ICRC1.SetAccountParameterResult {
+        await* ICRC1.set_minting_account(token, minting_account, caller);
+    };
+
+    public shared query func min_burn_amount() : async ICRC1.Balance {
+        ICRC1.min_burn_amount(token);
+    };
+
     // Functions for integration with the rosetta standard
     public shared query func get_transactions(req : ICRC1.GetTransactionsRequest) : async ICRC1.GetTransactionsResponse {
         ICRC1.get_transactions(token, req);
