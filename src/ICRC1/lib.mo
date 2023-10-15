@@ -284,7 +284,13 @@ module {
 
     /// Retrieve all the metadata of the token
     public func metadata(token : T.TokenData) : [T.MetaDatum] {
-        SB.toArray(token.metadata);
+        [
+            ("icrc1:fee", #Nat(token._fee)),
+            ("icrc1:name", #Text(token._name)),
+            ("icrc1:symbol", #Text(token._symbol)),
+            ("icrc1:decimals", #Nat(Nat8.toNat(token._decimals))),
+            ("icrc1:logo", #Text(token._logo))
+        ]
     };
 
     /// Returns the total supply of circulating tokens
