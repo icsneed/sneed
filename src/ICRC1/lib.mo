@@ -284,23 +284,13 @@ module {
     };
 
     /// Helper function to mint tokens with minimum args
-    public func mint(token : T.TokenData, args : T.Mint, caller : Principal) : async* T.TransferResult {
-
-        if (caller != token.minting_account.owner) {
-            return #Err(
-                #GenericError {
-                    error_code = 401;
-                    message = "Unauthorized: Only the minting_account can mint tokens.";
-                },
-            );
-        };
-
-        let transfer_args : T.TransferArgs = {
-            args with from_subaccount = token.minting_account.subaccount;
-            fee = null;
-        };
-
-        await* transfer(token, transfer_args, caller);
+    public func mint(token : T.TokenData, args : T.Mint, caller : Principal) : async* T.TransferResult {													
+        return #Err(
+            #GenericError {
+                error_code = 401;
+                message = "Unauthorized: Minting not allowed.";
+            },
+        );
     };
 
     /// Helper function to burn tokens with minimum args

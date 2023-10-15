@@ -218,17 +218,13 @@ module {
             };
 
             case (#mint) {
-                if (token.max_supply < token._minted_tokens + tx_req.amount) {
-                    let remaining_tokens = (token.max_supply - token._minted_tokens) : Nat;
-
-                    return #err(
-                        #GenericError({
-                            error_code = 0;
-                            message = "Cannot mint more than " # Nat.toText(remaining_tokens) # " tokens";
-                        }),
-                    );
-                };
-            };
+				return #err(
+					#GenericError({
+						error_code = 0;
+						message = "Minting not allowed";
+					}),
+				);
+			};
             case (#burn) {
                 if (tx_req.to == token.minting_account and tx_req.amount < token.min_burn_amount) {
                     return #err(

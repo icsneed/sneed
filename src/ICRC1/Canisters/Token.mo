@@ -68,7 +68,12 @@ shared ({ caller = _owner }) actor class Token(
     };
 
     public shared ({ caller }) func mint(args : ICRC1.Mint) : async ICRC1.TransferResult {
-        await* ICRC1.mint(token, args, caller);
+        return #Err(
+            #GenericError {
+                error_code = 401;
+                message = "Unauthorized: Minting is not allowed.";
+            },
+        );
     };
 
     public shared ({ caller }) func burn(args : ICRC1.BurnArgs) : async ICRC1.TransferResult {
