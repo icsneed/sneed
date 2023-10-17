@@ -197,6 +197,15 @@ module {
             );
         };
 
+        if (tx_req.amount <= token._fee) {
+            return #err(
+                #GenericError({
+                    error_code = 0;
+                    message = "Amount must be greater than fee";
+                }),
+            );
+        };
+
         switch (tx_req.kind) {
             case (#transfer) {
                 if (not validate_fee(token, tx_req.fee)) {
@@ -212,7 +221,7 @@ module {
                     tx_req.encoded.from,
                 );
 
-                if (tx_req.amount + token._fee > balance) {
+                if (tx_req.amount > balance) { // amount is inclusive of fee
                     return #err(#InsufficientFunds { balance });
                 };
             };
