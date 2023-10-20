@@ -35,6 +35,8 @@ shared ({ caller = ledger_canister_id }) actor class Archive() : async T.Archive
     stable let BUCKET_SIZE = 1000;
     stable let MAX_TRANSACTIONS_PER_REQUEST = 5000;
 
+    stable let MAX_TXS_LENGTH = 100;
+
     stable var memory_pages : Nat64 = ExperimentalStableMemory.size();
     stable var total_memory_used : Nat64 = 0;
 
@@ -196,10 +198,12 @@ shared ({ caller = ledger_canister_id }) actor class Archive() : async T.Archive
     public shared query func get_transactions(req : T.GetTransactionsRequest) : async T.TransactionRange {
         let { start; length } = req;
         var iter = Itertools.empty<MemoryBlock>();
+        let length_max = Nat.max(0, length);
+        let length_min = Nat.min(MAX_TXS_LENGTH, length_max);
 
         let start_max = Nat.max(start, first_tx);
         let start_off : Nat = start_max - first_tx;
-        let end = start_off + length;
+        let end = start_off + length_min;
         let start_bucket = start_off / BUCKET_SIZE;
         let end_bucket = (Nat.min(end, total_txs()) / BUCKET_SIZE) + 1;
 
