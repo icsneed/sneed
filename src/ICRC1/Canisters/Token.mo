@@ -2,6 +2,7 @@ import Array "mo:base/Array";
 import Iter "mo:base/Iter";
 import Option "mo:base/Option";
 import Time "mo:base/Time";
+import Nat "mo:base/Nat";
 
 import ExperimentalCycles "mo:base/ExperimentalCycles";
 
@@ -110,6 +111,19 @@ shared ({ caller = _owner }) actor class Token(
 
     public shared query func min_burn_amount() : async ICRC1.Balance {
         ICRC1.min_burn_amount(token);
+    };
+
+
+    public shared query func get_archive() : async ICRC1.ArchiveInterface {
+        ICRC1.get_archive(token);
+    };
+
+    public shared query ({ caller }) func get_total_tx() : async Nat {
+        ICRC1.total_transactions(token);
+    };
+
+    public shared query ({ caller }) func get_archive_stored_txs() : async Nat {
+        ICRC1.get_archive_stored_txs(token);
     };
 
     // Functions for integration with the rosetta standard

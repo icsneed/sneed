@@ -208,6 +208,26 @@ module {
         /// Returns the number of bytes left in the archive before it is full
         /// > The capacity of the archive canister is 32GB
         remaining_capacity : shared query () -> async Nat;
+
+        total_used : shared query () -> async Nat;
+
+        max_memory : shared query () -> async Nat;
+
+        get_first_tx : shared query () -> async Nat;
+
+        get_last_tx : shared query () -> async Nat;
+
+        get_prev_archive : shared query () -> async ArchiveInterface;
+
+        get_next_archive : shared query () -> async ArchiveInterface;
+
+        set_first_tx : shared (Nat) -> async Result.Result<(), Text>;
+
+        set_last_tx : shared (Nat) -> async Result.Result<(), Text>;
+
+        set_prev_archive : shared (ArchiveInterface) -> async Result.Result<(), Text>;
+
+        set_next_archive : shared (ArchiveInterface) -> async Result.Result<(), Text>;
     };
 
     /// Initial arguments for the setting up the icrc1 token canister

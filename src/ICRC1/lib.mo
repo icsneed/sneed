@@ -293,6 +293,16 @@ module {
         ]
     };
 
+    /// Returns the current archive canister
+    public func get_archive(token : T.TokenData) : T.ArchiveInterface {
+        token.archive.canister;
+    };    
+
+    /// Returns the total number of transactions in the archive
+    public func get_archive_stored_txs(token : T.TokenData) : Nat {
+        token.archive.stored_txs;
+    };    
+
     /// Returns the total supply of circulating tokens
     public func total_supply(token : T.TokenData) : T.Balance {
         token._minted_tokens - token._burned_tokens;
@@ -521,6 +531,11 @@ module {
         if (archive.stored_txs == 0) {
             EC.add(200_000_000_000);
             archive.canister := await Archive.Archive();
+        } else { 
+            let add = await* should_add_archive(token);
+            if (add == 1) {
+                await* add_archive(token);
+            };
         };
 
         let res = await archive.canister.append_transactions(
@@ -536,4 +551,38 @@ module {
         };
     };
 
+    func should_add_archive(token : T.TokenData) : async* Nat {
+        let { archive } = token;
+        let total_used = await archive.canister.total_used();
+        let remaining_capacity = await archive.canister.remaining_capacity();
+
+        if ( total_used >= remaining_capacity ) {
+            return 1;
+        };
+
+        0;
+    };    
+
+    // Creates a new archive canister
+    func add_archive(token : T.TokenData) : async* () {
+        let { archive; transactions } = token;
+
+        let oldCanister = archive.canister;
+        let old_total_tx : Nat = await oldCanister.total_transactions();
+        let old_first_tx : Nat = await oldCanister.get_first_tx();
+        let old_last_tx : Nat = old_first_tx + old_total_tx - 1;
+                // last_tx == SB.size(token.transactions) + token.archive.stored_txs
+
+        let res1 = await oldCanister.set_last_tx(old_last_tx);
+
+        EC.add(200_000_000_000);
+        let newCanister = await Archive.Archive();
+
+        let res2 = await oldCanister.set_next_archive(newCanister);
+        let res3 = await newCanister.set_prev_archive(oldCanister);
+
+        let res4 = await newCanister.set_first_tx(old_last_tx + 1);
+
+        archive.canister := newCanister;
+    };
 };
