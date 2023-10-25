@@ -1,6 +1,6 @@
 # SNEED ICRC-1 Implementation
 This repo contains the source code for the SNEED ICRC1 token, 
-a fork of the [@NatLabs](https://github.com/NatLabs/icrc1) implementation of the 
+a fork of the [NatLabs implementation](https://github.com/NatLabs/icrc1) of the 
 [ICRC-1](https://github.com/dfinity/ICRC-1) token standard. 
 
 NB: A logo field has been added to the construction arguments. Below is the example from NatLabs, modified to include the logo field.
