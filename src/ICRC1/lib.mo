@@ -222,7 +222,16 @@ module {
     /// Set the fee for each transfer
     public func set_fee(token : T.TokenData, fee : Nat, caller : Principal) : async* T.SetBalanceParameterResult {
         if (caller == token._minting_account.owner) {
-            token._fee := fee;
+            if (fee >= 10_000 and fee <= 1_000_000_000) {
+                token._fee := fee;
+            } else {
+                return #Err(
+                    #GenericError {
+                        error_code = 400;
+                        message = "Bad request: fee must be a value between 10_000 and 1_000_000_000.";
+                    },
+                );
+            };
         } else {
             return #Err(
                 #GenericError {
@@ -237,7 +246,16 @@ module {
     /// Set the number of decimals specified for the token
     public func set_decimals(token : T.TokenData, decimals : Nat8, caller : Principal) : async* T.SetNat8ParameterResult {
         if (caller == token._minting_account.owner) {
-            token._decimals := decimals;
+            if (decimals >= 2 and decimals <= 12) {
+                token._decimals := decimals;
+            } else {
+                return #Err(
+                    #GenericError {
+                        error_code = 400;
+                        message = "Bad request: decimals must be a value between 2 and 12.";
+                    },
+                );
+            };      
         } else {
             return #Err(
                 #GenericError {
@@ -249,10 +267,19 @@ module {
         #Ok(token._decimals);
     };
 
-    /// Set the fee for each transfer
+    /// Set the minimum burn amount
     public func set_min_burn_amount(token : T.TokenData, min_burn_amount : Nat, caller : Principal) : async* T.SetBalanceParameterResult {
         if (caller == token._minting_account.owner) {
-            token._min_burn_amount := min_burn_amount;
+            if (min_burn_amount >= 10_000 and min_burn_amount <= 1_000_000_000_000) {
+                token._min_burn_amount := min_burn_amount;
+            } else {
+                return #Err(
+                    #GenericError {
+                        error_code = 400;
+                        message = "Bad request: minimum burn amount must be a value between 10_000 and 1_000_000_000_000.";
+                    },
+                );
+            };   
         } else {
             return #Err(
                 #GenericError {
@@ -264,7 +291,7 @@ module {
         #Ok(token._min_burn_amount);
     };
 
-    /// Set the fee for each transfer
+    /// Set the minting account
     public func set_minting_account(token : T.TokenData, minting_account : Text, caller : Principal) : async*  T.SetAccountParameterResult {
         if (caller == token._minting_account.owner) {
             token._minting_account := {
